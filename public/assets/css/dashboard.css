@@ -1,0 +1,600 @@
+/* public/assets/css/dashboard.css */
+
+/* ============================ */
+/* ===== HERO ===== */
+/* ============================ */
+.dashboard-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.hero-greeting {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.hero-name {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    margin: 0.2rem 0 0.4rem;
+}
+
+.hero-sub {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* ============================ */
+/* ===== GRILLE DASHBOARD ===== */
+/* ============================ */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+/* Crucial : empêche les colonnes de déborder de leur conteneur */
+.dashboard-col-main,
+.dashboard-col-side {
+    min-width: 0;
+}
+
+.dashboard-col-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.dashboard-col-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 90px;
+}
+
+/* ============================ */
+/* ===== STATS MODERNES ===== */
+/* ============================ */
+.stats-grid-modern {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card-modern {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.25rem 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.stat-card-modern::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: 0;
+    width: 5px;
+    border-radius: 0 6px 6px 0;
+}
+
+.stat-accent-blue::before    { background: linear-gradient(180deg, #6366f1, #4f46e5); }
+.stat-accent-amber::before   { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+.stat-accent-purple::before  { background: linear-gradient(180deg, #a78bfa, #8b5cf6); }
+.stat-accent-green::before   { background: linear-gradient(180deg, #34d399, #10b981); }
+.stat-accent-red::before     { background: linear-gradient(180deg, #f87171, #ef4444); }
+
+.stat-card-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+    border-color: transparent;
+}
+
+.stat-icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+}
+
+.stat-card-modern:hover .stat-icon-wrap {
+    transform: scale(1.08);
+}
+
+.stat-icon-blue   { background: #eef2ff; color: #4f46e5; }
+.stat-icon-amber  { background: #fffbeb; color: #d97706; }
+.stat-icon-purple { background: #f5f3ff; color: #7c3aed; }
+.stat-icon-green  { background: #ecfdf5; color: #059669; }
+.stat-icon-red    { background: #fef2f2; color: #dc2626; }
+
+.stat-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    line-height: 1.1;
+    min-width: 0;
+}
+
+.stat-value-modern {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.8px;
+    line-height: 1;
+}
+
+.stat-label-modern {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================ */
+/* ===== CARTE MODERNE ===== */
+/* ============================ */
+.card-modern {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.card-modern-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.card-modern-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+    letter-spacing: -0.2px;
+}
+
+.card-modern-sub {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0.2rem 0 0;
+}
+
+/* ============================ */
+/* ===== MINI TÂCHES ===== */
+/* ============================ */
+.task-mini-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-mini-item {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.task-mini-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.task-mini-item:first-child {
+    padding-top: 0;
+}
+
+.task-mini-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.task-mini-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-mini-title {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.92rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-mini-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.78rem;
+    color: var(--text-soft);
+    margin-top: 0.15rem;
+}
+
+.task-mini-date.is-overdue {
+    color: var(--danger);
+    font-weight: 600;
+}
+
+/* ============================ */
+/* ===== CHIPS CATÉGORIES ===== */
+/* ============================ */
+.category-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.category-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.85rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+}
+
+.category-chip:hover {
+    background: #fff;
+    border-color: var(--primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.category-chip-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.category-chip-name {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.category-chip-count {
+    background: #fff;
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 10px;
+    min-width: 22px;
+    text-align: center;
+}
+
+/* ============================ */
+/* ===== PROGRESSION CIRCULAIRE ===== */
+/* ============================ */
+.card-progress {
+    text-align: center;
+}
+
+.card-progress .card-modern-title,
+.card-progress .card-modern-sub {
+    text-align: left;
+}
+
+.progress-circle-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1.5rem 0;
+}
+
+.progress-circle {
+    transform: rotate(-90deg);
+    transform-origin: center;
+}
+
+.progress-circle-bg {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 10;
+}
+
+.progress-circle-fill {
+    fill: none;
+    stroke: var(--primary);
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.8s ease;
+}
+
+.progress-circle-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.progress-percent {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
+.progress-fraction {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 0.3rem;
+}
+
+.progress-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* ============================ */
+/* ===== ACTIONS RAPIDES ===== */
+/* ============================ */
+.quick-actions-modern {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.quick-action {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.75rem;
+    background: var(--bg);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all 0.15s;
+}
+
+.quick-action:hover {
+    background: #fff;
+    border-color: var(--primary);
+    transform: translateX(3px);
+}
+
+.quick-action-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.quick-icon-blue   { background: rgba(99, 102, 241, 0.12); color: var(--primary); }
+.quick-icon-purple { background: rgba(139, 92, 246, 0.12); color: var(--purple); }
+.quick-icon-green  { background: rgba(16, 185, 129, 0.12); color: var(--success); }
+
+.quick-action-body {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+}
+
+.quick-action-title {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+.quick-action-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+/* ============================ */
+/* ===== EMPTY STATE ===== */
+/* ============================ */
+.empty-modern {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.empty-modern-icon {
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: center;
+}
+
+.empty-modern p {
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.empty-modern-sub {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* ============================ */
+/* ===== RESPONSIVE ===== */
+/* ============================ */
+
+/* Tablette */
+@media (max-width: 900px) {
+    /* La sidebar passe sous le contenu principal */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-col-side {
+        position: static;
+    }
+
+    .dashboard-hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .hero-name {
+        font-size: 1.6rem;
+    }
+
+    /* Force les stats sur 2 colonnes max sur tablette */
+    .stats-grid-modern {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile */
+@media (max-width: 500px) {
+    /* Sur mobile, les stats passent en 1 SEULE colonne pour être lisibles */
+    .stats-grid-modern {
+        grid-template-columns: 1fr;
+    }
+
+    /* Les boutons prennent toute la largeur */
+    .hero-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Les catégories s'empilent */
+    .category-chips {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .category-chip {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    /* Les cartes prennent moins de padding pour gagner de la place */
+    .card-modern {
+        padding: 1rem;
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1100px) {
+    .dashboard-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
+        gap: 1rem;
+    }
+    .stats-grid-modern {
+        grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+        gap: 0.75rem;
+    }
+    .stat-card-modern {
+        padding: 1rem 0.85rem;
+        gap: 0.7rem;
+    }
+    .stat-icon-wrap {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-hero {
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+    }
+    .hero-name {
+        font-size: clamp(1.35rem, 6vw, 1.65rem);
+        overflow-wrap: anywhere;
+    }
+    .hero-sub {
+        font-size: 0.88rem;
+    }
+    .stats-grid-modern {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65rem;
+    }
+    .stat-card-modern {
+        min-width: 0;
+        padding: 0.85rem 0.7rem;
+        gap: 0.6rem;
+    }
+    .stat-icon-wrap {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+    }
+    .stat-value-modern {
+        font-size: 1.4rem;
+    }
+    .stat-label-modern {
+        white-space: normal;
+        font-size: 0.72rem;
+        line-height: 1.25;
+    }
+    .card-modern-header {
+        flex-wrap: wrap;
+    }
+    .progress-circle svg {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+@media (max-width: 360px) {
+    .stats-grid-modern {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

@@ -1,0 +1,78 @@
+/* public/assets/css/auth.css */
+/* register.php + login.php */
+
+.auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+}
+
+.auth-container {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-container h1 {
+    margin-bottom: 1.5rem;
+    color: var(--text);
+    text-align: center;
+    font-weight: 700;
+}
+
+.auth-container .btn-primary {
+    width: 100%;
+    justify-content: center;
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.auth-link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-link a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+    .auth-container {
+        padding: 1.75rem;
+        margin: 1rem;
+    }
+}
+
+.auth-page {
+    padding: 1rem;
+}
+.auth-container {
+    min-width: 0;
+}
+.auth-container input {
+    min-width: 0;
+}
+@media (max-width: 420px) {
+    .auth-page {
+        align-items: flex-start;
+        padding: 1rem 0.75rem;
+    }
+    .auth-container {
+        padding: 1.25rem;
+        margin: 0;
+    }
+    .auth-container h1 {
+        font-size: 1.5rem;
+    }
+}
