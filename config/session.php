@@ -40,6 +40,15 @@ if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.gc_probability', '1');
     ini_set('session.gc_divisor', '100');
 
+    // Activer la persistance en base de données (essentiel pour Vercel serverless)
+    try {
+        require_once __DIR__ . '/../src/DatabaseSessionHandler.php';
+        $handler = new DatabaseSessionHandler();
+        session_set_save_handler($handler, true);
+    } catch (Throwable $e) {
+        // Fallback transparent vers les sessions fichiers standard
+    }
+
     session_start();
 
     // Régénération périodique de l'ID (anti-fixation long terme)
