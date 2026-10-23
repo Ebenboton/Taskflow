@@ -19,13 +19,25 @@ class Database
                 PDO::ATTR_EMULATE_PREPARES   => false,
             ];
 
-            // Configuration SSL pour les bases distantes (TiDB, Aiven, PlanetScale, etc.)
+            // Configuration SSL obligatoire pour les bases Cloud (TiDB Cloud, Aiven, etc.)
             if (!empty($config['ssl_ca']) && file_exists($config['ssl_ca'])) {
                 $options[PDO::MYSQL_ATTR_SSL_CA] = $config['ssl_ca'];
-            } elseif (!empty($config['ssl'])) {
-                // Active le chiffrement SSL
+            } elseif ($config['ssl']) {
+                $candidates = [
+                    __DIR__ . '/../config/isrgrootx1.pem', // Certificat racine TiDB Cloud / Let's Encrypt
+                    __DIR__ . '/../config/cacert.pem',     // Bundle Mozilla global
+                    '/etc/pki/tls/certs/ca-bundle.crt',    // Amazon Linux (Vercel Lambda)
+                    '/etc/ssl/certs/ca-certificates.crt',  // Debian / Ubuntu
+                    '/etc/ssl/cert.pem',                   // Alpine / macOS
+                ];
+                foreach ($candidates as $candidate) {
+                    if (file_exists($candidate)) {
+                        $options[PDO::MYSQL_ATTR_SSL_CA] = $candidate;
+                        break;
+                    }
+                }
                 if (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
-                    $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+                    $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
                 }
             }
 
@@ -87,15 +99,15 @@ class Database
                             <strong>Le serveur tente de se connecter à "localhost" :</strong> Vercel ne peut pas accéder au XAMPP de votre PC personnel.
                         </p>
                         <ol>
-                            <li>Créez une base MySQL Cloud gratuite sur <strong><a href="https://tidbcloud.com" target="_blank" style="color:#38bdf8;">tidbcloud.com</a></strong> (ou Aiven/Clever Cloud).</li>
+                            <li>Créez une base MySQL Cloud gratuite sur <strong><a href="https://tidbcloud.com" target="_blank" style="color:#38bdf8;">tidbcloud.com</a></strong>.</li>
                             <li>Sur Vercel, allez dans <strong>Settings &gt; Environment Variables</strong> et renseignez <code>DB_HOST</code>, <code>DB_PORT</code>, <code>DB_NAME</code>, <code>DB_USER</code>, <code>DB_PASSWORD</code>, <code>DB_SSL=true</code>.</li>
                             <li><strong>Important :</strong> Après avoir ajouté ou modifié les variables sur Vercel, allez dans l'onglet <strong>Deployments</strong>, cliquez sur les <code>...</code> du dernier déploiement puis sur <strong>Redeploy</strong>.</li>
                         </ol>
                     <?php else: ?>
                         <ol>
                             <li>Vérifiez l'hôte (<code><?= htmlspecialchars($config['host']) ?></code>) et le port (<code><?= htmlspecialchars((string)$config['port']) ?></code>).</li>
-                            <li>Vérifiez l'utilisateur et le mot de passe.</li>
-                            <li>Vérifiez que votre base Cloud autorise les connexions distantes et activez le SSL (<code>DB_SSL=true</code>).</li>
+                            <li>Vérifiez que votre mot de passe dans les variables Vercel est bien le mot de passe généré par TiDB.</li>
+                            <li>Assurez-vous d'avoir bien importé le fichier <code>sql/schema.sql</code> dans l'éditeur SQL de TiDB Cloud.</li>
                             <li>Pensez à <strong>Redeploy</strong> sur Vercel pour appliquer les changements.</li>
                         </ol>
                     <?php endif; ?>
