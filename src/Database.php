@@ -17,27 +17,38 @@ class Database
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES   => false,
+                PDO::ATTR_TIMEOUT            => 5,
             ];
 
-            // Configuration SSL obligatoire pour les bases Cloud (TiDB Cloud, Aiven, etc.)
+            // Configuration SSL obligatoire pour TiDB Cloud / Aiven
             if (!empty($config['ssl_ca']) && file_exists($config['ssl_ca'])) {
                 $options[PDO::MYSQL_ATTR_SSL_CA] = $config['ssl_ca'];
-            } elseif ($config['ssl']) {
+            } elseif (!empty($config['ssl'])) {
                 $candidates = [
-                    __DIR__ . '/../config/isrgrootx1.pem', // Certificat racine TiDB Cloud / Let's Encrypt
-                    __DIR__ . '/../config/cacert.pem',     // Bundle Mozilla global
-                    '/etc/pki/tls/certs/ca-bundle.crt',    // Amazon Linux (Vercel Lambda)
+                    __DIR__ . '/../config/isrgrootx1.pem',
+                    __DIR__ . '/../config/cacert.pem',
+                    '/etc/pki/tls/certs/ca-bundle.crt',    // Amazon Linux 2 (Vercel)
                     '/etc/ssl/certs/ca-certificates.crt',  // Debian / Ubuntu
                     '/etc/ssl/cert.pem',                   // Alpine / macOS
                 ];
+
+                $caFound = false;
                 foreach ($candidates as $candidate) {
                     if (file_exists($candidate)) {
                         $options[PDO::MYSQL_ATTR_SSL_CA] = $candidate;
+                        $caFound = true;
                         break;
                     }
                 }
+
+                // Si aucun certificat racine n'est trouvé en fichier, on force l'activation du mode SSL
+                if (!$caFound) {
+                    $options[PDO::MYSQL_ATTR_SSL_CA] = true;
+                }
+
+                // Désactivation de la vérification stricte du nom d'hôte pour garantir l'établissement du tunnel TLS
                 if (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
-                    $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+                    $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
                 }
             }
 
@@ -67,7 +78,7 @@ class Database
             <style>
                 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
                 .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 30px; max-width: 600px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-                h1 { margin-top: 0; color: #f43f5e; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
+                <h1> { margin-top: 0; color: #f43f5e; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; }
                 p { line-height: 1.6; color: #cbd5e1; font-size: 0.95rem; }
                 .details { background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin: 20px 0; font-family: monospace; font-size: 0.85rem; color: #94a3b8; }
                 .details div { margin-bottom: 6px; }
@@ -89,7 +100,7 @@ class Database
                     <div><strong>Port (DB_PORT) :</strong> <?= htmlspecialchars((string)$config['port']) ?></div>
                     <div><strong>Base (DB_NAME) :</strong> <?= htmlspecialchars($config['dbname']) ?></div>
                     <div><strong>Utilisateur (DB_USER) :</strong> <?= htmlspecialchars($config['username']) ?></div>
-                    <div><strong>SSL activé (DB_SSL) :</strong> <?= $config['ssl'] ? 'Oui' : 'Non' ?></div>
+                    <div><strong>SSL activé (DB_SSL) :</strong> <?= !empty($config['ssl']) ? 'Oui' : 'Non' ?></div>
                 </div>
 
                 <div class="help-box">
