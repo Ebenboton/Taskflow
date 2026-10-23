@@ -5,30 +5,36 @@ require_once __DIR__ . '/Database.php';
 
 class DatabaseSessionHandler implements SessionHandlerInterface
 {
-    private PDO $db;
-
-    public function __construct(?PDO $db = null)
-    {
-        $this->db = $db ?? Database::getConnection();
-    }
+    private ?PDO $pdo = null;
 
     public function open(string $path, string $name): bool
     {
-        return true;
+        try {
+            $this->pdo = Database::getConnection();
+            return true;
+        } catch (Throwable $e) {
+            return false;
+        }
     }
 
     public function close(): bool
     {
+        $this->pdo = null;
         return true;
     }
 
     public function read(string $id): string|false
     {
         try {
-            $stmt = $this->db->prepare("SELECT data FROM sessions WHERE id = ? AND expires_at > ? LIMIT 1");
-            $stmt->execute([$id, time()]);
-            $data = $stmt->fetchColumn();
-            return $data !== false ? (string)$data : '';
+            if (!$this->pdo) {
+                $this->pdo = Database::getConnection();
+            }
+
+            $stmt = $this->pdo->prepare("SELECT data FROM sessions WHERE id = :id LIMIT 1");
+            $stmt->execute(['id' => $id]);
+            $result = $stmt->fetchColumn();
+
+            return $result !== false ? (string)$result : '';
         } catch (Throwable $e) {
             return '';
         }
@@ -37,14 +43,23 @@ class DatabaseSessionHandler implements SessionHandlerInterface
     public function write(string $id, string $data): bool
     {
         try {
-            $expires = time() + 7200; // 2 heures
-            $stmt = $this->db->prepare(
-                "INSERT INTO sessions (id, data, expires_at)
-                 VALUES (?, ?, ?)
-                 ON DUPLICATE KEY UPDATE data = VALUES(data), expires_at = VALUES(expires_at)"
-            );
-            return $stmt->execute([$id, $data, $expires]);
+            if (!$this->pdo) {
+                $this->pdo = Database::getConnection();
+            }
+
+            $stmt = $this->pdo->prepare("
+                INSERT INTO sessions (id, data, access)
+                VALUES (:id, :data, :access)
+                ON DUPLICATE KEY UPDATE data = VALUES(data), access = VALUES(access)
+            ");
+
+            return $stmt->execute([
+                'id'     => $id,
+                'data'   => $data,
+                'access' => time(),
+            ]);
         } catch (Throwable $e) {
+            error_log("DatabaseSessionHandler::write error: " . $e->getMessage());
             return false;
         }
     }
@@ -52,8 +67,12 @@ class DatabaseSessionHandler implements SessionHandlerInterface
     public function destroy(string $id): bool
     {
         try {
-            $stmt = $this->db->prepare("DELETE FROM sessions WHERE id = ?");
-            return $stmt->execute([$id]);
+            if (!$this->pdo) {
+                $this->pdo = Database::getConnection();
+            }
+
+            $stmt = $this->pdo->prepare("DELETE FROM sessions WHERE id = :id");
+            return $stmt->execute(['id' => $id]);
         } catch (Throwable $e) {
             return false;
         }
@@ -62,11 +81,17 @@ class DatabaseSessionHandler implements SessionHandlerInterface
     public function gc(int $max_lifetime): int|false
     {
         try {
-            $stmt = $this->db->prepare("DELETE FROM sessions WHERE expires_at < ?");
-            $stmt->execute([time()]);
+            if (!$this->pdo) {
+                $this->pdo = Database::getConnection();
+            }
+
+            $old = time() - $max_lifetime;
+            $stmt = $this->pdo->prepare("DELETE FROM sessions WHERE access < :old");
+            $stmt->execute(['old' => $old]);
+
             return $stmt->rowCount();
         } catch (Throwable $e) {
-            return 0;
+            return false;
         }
     }
 }
