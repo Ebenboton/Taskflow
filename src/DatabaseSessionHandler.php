@@ -30,8 +30,12 @@ class DatabaseSessionHandler implements SessionHandlerInterface
                 $this->pdo = Database::getConnection();
             }
 
-            $stmt = $this->pdo->prepare("SELECT data FROM sessions WHERE id = :id LIMIT 1");
-            $stmt->execute(['id' => $id]);
+            // Récupère uniquement les sessions non expirées
+            $stmt = $this->pdo->prepare("SELECT data FROM sessions WHERE id = :id AND expires_at >= :now LIMIT 1");
+            $stmt->execute([
+                'id'  => $id,
+                'now' => time(),
+            ]);
             $result = $stmt->fetchColumn();
 
             return $result !== false ? (string)$result : '';
@@ -47,16 +51,20 @@ class DatabaseSessionHandler implements SessionHandlerInterface
                 $this->pdo = Database::getConnection();
             }
 
+            // Utilise expires_at avec la durée de vie configurée (7200s par défaut)
+            $lifetime = (int)ini_get('session.gc_maxlifetime') ?: 7200;
+            $expiresAt = time() + $lifetime;
+
             $stmt = $this->pdo->prepare("
-                INSERT INTO sessions (id, data, access)
-                VALUES (:id, :data, :access)
-                ON DUPLICATE KEY UPDATE data = VALUES(data), access = VALUES(access)
+                INSERT INTO sessions (id, data, expires_at)
+                VALUES (:id, :data, :expires_at)
+                ON DUPLICATE KEY UPDATE data = VALUES(data), expires_at = VALUES(expires_at)
             ");
 
             return $stmt->execute([
-                'id'     => $id,
-                'data'   => $data,
-                'access' => time(),
+                'id'         => $id,
+                'data'       => $data,
+                'expires_at' => $expiresAt,
             ]);
         } catch (Throwable $e) {
             error_log("DatabaseSessionHandler::write error: " . $e->getMessage());
@@ -85,9 +93,9 @@ class DatabaseSessionHandler implements SessionHandlerInterface
                 $this->pdo = Database::getConnection();
             }
 
-            $old = time() - $max_lifetime;
-            $stmt = $this->pdo->prepare("DELETE FROM sessions WHERE access < :old");
-            $stmt->execute(['old' => $old]);
+            // Nettoyage des sessions expirées
+            $stmt = $this->pdo->prepare("DELETE FROM sessions WHERE expires_at < :now");
+            $stmt->execute(['now' => time()]);
 
             return $stmt->rowCount();
         } catch (Throwable $e) {
