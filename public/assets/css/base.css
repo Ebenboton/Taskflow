@@ -1,62 +1,66 @@
 /* public/assets/css/base.css */
-/* Variables, reset, typographie — chargé sur TOUTES les pages */
+/* Variables de design, reset, typographie — chargé sur TOUTES les pages */
 
-* {
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 :root {
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #818cf8;
-    --bg: #f7f8fc;
+    /* Typographie */
+    --font-body: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-display: 'Bricolage Grotesque', 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* Encre et surfaces */
+    --ink: #14202b;
+    --ink-2: #475463;
+    --ink-3: #6f7d8b;
+    --paper: #f3f5f7;
     --surface: #ffffff;
-    --border: #eef1f8;
-    --text: #0f172a;
-    --text-muted: #64748b;
-    --text-soft: #94a3b8;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --purple: #8b5cf6;
-    --radius: 14px;
-    --radius-sm: 10px;
-    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.03);
-    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.04);
-    --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.04);
+    --line: #e2e7ec;
+    --line-strong: #cbd4dc;
+
+    /* Couleur de marque (bleu pétrole) */
+    --accent: #0b6e78;
+    --accent-strong: #08555d;
+    --accent-bright: #2fb5c0;
+    --accent-tint: #e2f1f2;
+
+    /* Barre latérale */
+    --side: #0e2429;
+    --side-2: #17363c;
+    --side-ink: #c4d6d9;
+
+    /* États des tâches */
+    --todo: #566676;
+    --todo-tint: #edf0f3;
+    --progress: #2c5cc0;
+    --progress-tint: #e7eefb;
+    --done: #1b7a52;
+    --done-tint: #e2f4ea;
+    --warn: #9a5a08;
+    --warn-tint: #fcefd9;
+    --danger: #b42b2b;
+    --danger-tint: #fbe8e8;
+
+    /* Formes */
+    --radius: 10px;
+    --radius-sm: 8px;
+    --radius-lg: 14px;
+    --sidebar-w: 248px;
+
+    /* Alias hérités */
+    --primary: var(--accent);
+    --bg: var(--paper);
+    --border: var(--line);
+    --text: var(--ink);
+    --text-muted: var(--ink-2);
+    --color-text-muted: var(--ink-2);
 }
 
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    color: var(--text);
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-a {
-    color: var(--primary);
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: none;
-}
-
-/* ============================ */
-/* ===== GARDE-FOUS RESPONSIFS ===== */
-/* ============================ */
 html {
     width: 100%;
-    min-width: 0;
     overflow-x: clip;
     -webkit-text-size-adjust: 100%;
 }
@@ -64,37 +68,61 @@ html {
 body {
     width: 100%;
     min-width: 0;
-    overflow-wrap: anywhere;
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--paper);
+    overflow-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    color: var(--ink);
+    font-weight: 650;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--accent-strong);
 }
 
 img, svg, video, canvas, iframe {
     max-width: 100%;
 }
 
-input, select, textarea, button {
+button, input, select, textarea {
+    font: inherit;
     max-width: 100%;
 }
 
-button, input, select, textarea {
-    font: inherit;
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
-@media (max-width: 480px) {
-    h1 { overflow-wrap: anywhere; }
-    .page-header {
-        align-items: flex-start;
-        gap: 0.6rem;
-    }
-    .page-header h2 {
-        min-width: 0;
-        font-size: 1.1rem;
-    }
-    .page-header .btn-export {
-        width: 100%;
-        margin: 0;
-        justify-content: center;
-    }
-    .form-row {
-        grid-template-columns: minmax(0, 1fr);
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

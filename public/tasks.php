@@ -119,6 +119,9 @@ $exportUrl = 'export.php' . ($exportQuery ? '?' . $exportQuery : '');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tâches - TaskFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="assets/css/header.css">
@@ -129,97 +132,110 @@ $exportUrl = 'export.php' . ($exportQuery ? '?' . $exportQuery : '');
 
     <main class="app-main">
         <div class="page-header">
-            <button onclick="history.back()" class="btn-back" title="Retour">←</button>
+            <button type="button" onclick="history.back()" class="btn-back" title="Retour" aria-label="Retour">
+                <?= icon('arrow-left', 18) ?>
+            </button>
             <h2>Mes tâches (<?= count($tasks) ?>)</h2>
             <a href="<?= htmlspecialchars($exportUrl) ?>" class="btn btn-secondary btn-export">
-                📥 Exporter CSV
+                <?= icon('download', 16) ?> Exporter CSV
             </a>
         </div>
 
         <?php if ($message): ?>
-            <div class="alert alert-<?= $messageType ?>"><?= htmlspecialchars($message) ?></div>
+            <div class="alert alert-<?= $messageType ?>" role="<?= $messageType === 'error' ? 'alert' : 'status' ?>">
+                <?= icon($messageType === 'error' ? 'alert-circle' : 'check-circle', 18) ?>
+                <span><?= htmlspecialchars($message) ?></span>
+            </div>
         <?php endif; ?>
 
-        <section class="card">
-            <h3><?= $editTask ? 'Modifier la tâche' : 'Nouvelle tâche' ?></h3>
+        <details class="card card-collapsible" <?= ($editTask || $messageType === 'error') ? 'open' : '' ?>>
+            <summary>
+                <span class="summary-icon"><?= icon($editTask ? 'edit' : 'plus', 16) ?></span>
+                <?= $editTask ? 'Modifier la tâche' : 'Nouvelle tâche' ?>
+                <span class="summary-chevron"><?= icon('chevron-down', 18) ?></span>
+            </summary>
 
-            <form method="POST" action="" class="task-form">
-                <?= CSRF::field() ?>
-                <input type="hidden" name="action" value="<?= $editTask ? 'update' : 'create' ?>">
-                <?php if ($editTask): ?>
-                    <input type="hidden" name="id" value="<?= $editTask['id'] ?>">
-                <?php endif; ?>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="title">Titre *</label>
-                        <input type="text" id="title" name="title" required minlength="2" maxlength="150"
-                               value="<?= $editTask ? htmlspecialchars($editTask['title']) : '' ?>">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="category_id">Catégorie</label>
-                        <select id="category_id" name="category_id">
-                            <option value="">— Sans catégorie —</option>
-                            <?php foreach ($categories as $cat): ?>
-                                <option value="<?= $cat['id'] ?>"
-                                    <?= ($editTask && $editTask['category_id'] == $cat['id']) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($cat['name']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" rows="3"><?= $editTask ? htmlspecialchars($editTask['description']) : '' ?></textarea>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="due_date">Échéance</label>
-                        <input type="date" id="due_date" name="due_date"
-                               value="<?= $editTask && $editTask['due_date'] ? htmlspecialchars($editTask['due_date']) : '' ?>">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="priority">Priorité</label>
-                        <select id="priority" name="priority">
-                            <option value="low"    <?= ($editTask && $editTask['priority'] === 'low')    ? 'selected' : '' ?>>Basse</option>
-                            <option value="medium" <?= (!$editTask || $editTask['priority'] === 'medium') ? 'selected' : '' ?>>Moyenne</option>
-                            <option value="high"   <?= ($editTask && $editTask['priority'] === 'high')   ? 'selected' : '' ?>>Haute</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="status">Statut</label>
-                        <select id="status" name="status">
-                            <option value="todo"        <?= (!$editTask || $editTask['status'] === 'todo')        ? 'selected' : '' ?>>À faire</option>
-                            <option value="in_progress" <?= ($editTask && $editTask['status'] === 'in_progress') ? 'selected' : '' ?>>En cours</option>
-                            <option value="done"        <?= ($editTask && $editTask['status'] === 'done')        ? 'selected' : '' ?>>Terminée</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">
-                        <?= $editTask ? 'Enregistrer' : 'Créer la tâche' ?>
-                    </button>
+            <div class="collapsible-body">
+                <form method="POST" action="" class="task-form">
+                    <?= CSRF::field() ?>
+                    <input type="hidden" name="action" value="<?= $editTask ? 'update' : 'create' ?>">
                     <?php if ($editTask): ?>
-                        <a href="tasks.php" class="btn btn-secondary">Annuler</a>
+                        <input type="hidden" name="id" value="<?= $editTask['id'] ?>">
                     <?php endif; ?>
-                </div>
-            </form>
-        </section>
 
-        <section class="card">
-            <h3>Filtres</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="title">Titre *</label>
+                            <input type="text" id="title" name="title" required minlength="2" maxlength="150"
+                                   value="<?= $editTask ? htmlspecialchars($editTask['title']) : '' ?>">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category_id">Catégorie</label>
+                            <select id="category_id" name="category_id">
+                                <option value="">— Sans catégorie —</option>
+                                <?php foreach ($categories as $cat): ?>
+                                    <option value="<?= $cat['id'] ?>"
+                                        <?= ($editTask && $editTask['category_id'] == $cat['id']) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($cat['name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="3"><?= $editTask ? htmlspecialchars($editTask['description']) : '' ?></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="due_date">Échéance</label>
+                            <input type="date" id="due_date" name="due_date"
+                                   value="<?= $editTask && $editTask['due_date'] ? htmlspecialchars($editTask['due_date']) : '' ?>">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="priority">Priorité</label>
+                            <select id="priority" name="priority">
+                                <option value="low"    <?= ($editTask && $editTask['priority'] === 'low')    ? 'selected' : '' ?>>Basse</option>
+                                <option value="medium" <?= (!$editTask || $editTask['priority'] === 'medium') ? 'selected' : '' ?>>Moyenne</option>
+                                <option value="high"   <?= ($editTask && $editTask['priority'] === 'high')   ? 'selected' : '' ?>>Haute</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="status">Statut</label>
+                            <select id="status" name="status">
+                                <option value="todo"        <?= (!$editTask || $editTask['status'] === 'todo')        ? 'selected' : '' ?>>À faire</option>
+                                <option value="in_progress" <?= ($editTask && $editTask['status'] === 'in_progress') ? 'selected' : '' ?>>En cours</option>
+                                <option value="done"        <?= ($editTask && $editTask['status'] === 'done')        ? 'selected' : '' ?>>Terminée</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <?= $editTask ? 'Enregistrer' : 'Créer la tâche' ?>
+                        </button>
+                        <?php if ($editTask): ?>
+                            <a href="tasks.php" class="btn btn-secondary">Annuler</a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
+        </details>
+
+        <section class="card filters-card" aria-label="Filtres">
             <form method="GET" action="" class="filters-form">
-                <div class="form-group">
+                <div class="form-group search-group">
                     <label for="search">Recherche</label>
-                    <input type="text" id="search" name="search" placeholder="Titre ou description..."
-                           value="<?= htmlspecialchars($filters['search']) ?>">
+                    <div class="search-field">
+                        <?= icon('search', 16) ?>
+                        <input type="text" id="search" name="search" placeholder="Titre ou description..."
+                               value="<?= htmlspecialchars($filters['search']) ?>">
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -256,76 +272,95 @@ $exportUrl = 'export.php' . ($exportQuery ? '?' . $exportQuery : '');
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Filtrer</button>
-                    <a href="tasks.php" class="btn btn-secondary">Réinitialiser</a>
+                    <a href="tasks.php" class="btn btn-secondary"><?= icon('rotate-ccw', 15) ?> Réinitialiser</a>
                 </div>
             </form>
         </section>
 
-        <section class="card">
-            <h3>Liste</h3>
+        <section class="card list-card">
+            <div class="list-card-header">
+                <h3>Liste</h3>
+                <span class="list-count"><?= count($tasks) ?> tâche<?= count($tasks) > 1 ? 's' : '' ?></span>
+            </div>
 
             <?php if (empty($tasks)): ?>
-                <p>Aucune tâche trouvée.</p>
+                <div class="empty-state">
+                    <span class="empty-state-icon"><?= icon('inbox', 22) ?></span>
+                    <strong>Aucune tâche trouvée.</strong>
+                    <span>Modifiez vos filtres ou créez une nouvelle tâche.</span>
+                </div>
             <?php else: ?>
                 <div class="task-list">
                     <?php foreach ($tasks as $task): ?>
                         <?php
                             $overdue = isOverdue($task['due_date'], $task['status']);
                             $borderColor = $task['category_color'] ?? '#95a5a6';
+                            $isDone = $task['status'] === 'done';
                         ?>
-                        <div class="task-card <?= $task['status'] === 'done' ? 'task-done' : '' ?>"
-                             style="border-left: 4px solid <?= htmlspecialchars($borderColor) ?>">
+                        <div class="task-card <?= $isDone ? 'task-done' : '' ?>"
+                             style="--cat: <?= htmlspecialchars($borderColor) ?>">
 
                             <form method="POST" action="" class="task-toggle-form">
                                 <?= CSRF::field() ?>
                                 <input type="hidden" name="action" value="toggle">
                                 <input type="hidden" name="id" value="<?= $task['id'] ?>">
-                                <button type="submit" class="task-toggle" title="Marquer comme <?= $task['status'] === 'done' ? 'à faire' : 'terminée' ?>">
-                                    <?= $task['status'] === 'done' ? '☑' : '☐' ?>
+                                <button type="submit" class="task-toggle <?= $isDone ? 'is-done' : '' ?>"
+                                        title="Marquer comme <?= $isDone ? 'à faire' : 'terminée' ?>"
+                                        aria-label="Marquer comme <?= $isDone ? 'à faire' : 'terminée' ?> : <?= htmlspecialchars($task['title']) ?>">
+                                    <?= icon($isDone ? 'check-circle' : 'circle', 24) ?>
                                 </button>
                             </form>
 
                             <div class="task-content">
                                 <div class="task-header">
                                     <h4><?= htmlspecialchars($task['title']) ?></h4>
-
-                                    <div class="task-badges">
-                                        <?php if ($task['category_name']): ?>
-                                            <span class="badge" style="background: <?= htmlspecialchars($task['category_color']) ?>20; color: <?= htmlspecialchars($task['category_color']) ?>; border: 1px solid <?= htmlspecialchars($task['category_color']) ?>40">
-                                                <?= htmlspecialchars($task['category_name']) ?>
-                                            </span>
-                                        <?php endif; ?>
-
-                                        <span class="badge badge-status-<?= $task['status'] ?>">
-                                            <?= statusLabel($task['status']) ?>
-                                        </span>
-
-                                        <span class="badge badge-priority-<?= $task['priority'] ?>">
-                                            <?= priorityLabel($task['priority']) ?>
-                                        </span>
-                                    </div>
                                 </div>
 
                                 <?php if ($task['description']): ?>
                                     <p class="task-description"><?= nl2br(htmlspecialchars($task['description'])) ?></p>
                                 <?php endif; ?>
 
+                                <div class="task-badges">
+                                    <?php if ($task['category_name']): ?>
+                                        <span class="badge badge-category">
+                                            <span class="color-dot" style="width:9px;height:9px;background: <?= htmlspecialchars($task['category_color']) ?>"></span>
+                                            <?= htmlspecialchars($task['category_name']) ?>
+                                        </span>
+                                    <?php endif; ?>
+
+                                    <span class="badge badge-status-<?= $task['status'] ?>">
+                                        <?= statusLabel($task['status']) ?>
+                                    </span>
+
+                                    <span class="badge badge-priority-<?= $task['priority'] ?>">
+                                        <?= icon('flag', 12) ?>
+                                        <?= priorityLabel($task['priority']) ?>
+                                    </span>
+                                </div>
+
                                 <?php if ($task['due_date']): ?>
                                     <p class="task-due <?= $overdue ? 'task-overdue' : '' ?>">
-                                        📅 <?= date('d/m/Y', strtotime($task['due_date'])) ?>
+                                        <?= icon('calendar', 14) ?>
+                                        <?= date('d/m/Y', strtotime($task['due_date'])) ?>
                                         <?= $overdue ? ' — En retard !' : '' ?>
                                     </p>
                                 <?php endif; ?>
                             </div>
 
                             <div class="task-actions">
-                                <a href="tasks.php?edit=<?= $task['id'] ?>" class="btn btn-small">✏️</a>
-                                <form method="POST" action="" style="display:inline"
+                                <a href="tasks.php?edit=<?= $task['id'] ?>" class="btn-icon" title="Modifier"
+                                   aria-label="Modifier la tâche : <?= htmlspecialchars($task['title']) ?>">
+                                    <?= icon('edit', 17) ?>
+                                </a>
+                                <form method="POST" action=""
                                       onsubmit="return confirm('Supprimer cette tâche ?');">
                                     <?= CSRF::field() ?>
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
-                                    <button type="submit" class="btn btn-small btn-white">🗑️</button>
+                                    <button type="submit" class="btn-icon btn-icon-danger" title="Supprimer"
+                                            aria-label="Supprimer la tâche : <?= htmlspecialchars($task['title']) ?>">
+                                        <?= icon('trash', 17) ?>
+                                    </button>
                                 </form>
                             </div>
                         </div>

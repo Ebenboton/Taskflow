@@ -1,288 +1,21 @@
 /* public/assets/css/components.css */
-/* Composants réutilisables : boutons, alertes, cartes, badges, formulaires */
+/* Composants réutilisables : boutons, alertes, formulaires, cartes, badges, mise en page */
 
-/* ============================ */
-/* ===== BOUTONS ===== */
-/* ============================ */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.7rem 1.25rem;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 0.92rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.15s;
-    text-align: center;
-    font-family: inherit;
-    line-height: 1;
+/* ===== Mise en page ===== */
+.dashboard-page {
+    min-height: 100vh;
 }
 
-.btn:hover {
-    transform: translateY(-1px);
+.app-main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.25rem 2rem 3rem;
 }
 
-.btn-primary {
-    background: var(--primary);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+.app-main-wide {
+    max-width: 1200px;
 }
 
-.btn-primary:hover {
-    background: var(--primary-dark);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
-}
-
-.btn-secondary {
-    background: var(--surface);
-    color: var(--text);
-    border: 1.5px solid var(--border);
-}
-
-.btn-secondary:hover {
-    background: var(--bg);
-    border-color: #dbe1ee;
-}
-
-.btn-outline {
-    background: transparent;
-    color: var(--text);
-    border: 1.5px solid var(--border);
-}
-
-.btn-outline:hover {
-    background: #fff;
-    border-color: var(--primary);
-    color: var(--primary);
-}
-
-.btn-ghost {
-    background: transparent;
-    color: var(--primary);
-    padding: 0.4rem 0.6rem;
-}
-
-.btn-ghost:hover {
-    background: rgba(99, 102, 241, 0.08);
-    transform: none;
-}
-
-.btn-danger {
-    background: var(--danger);
-    color: #fff;
-}
-
-.btn-small {
-    padding: 0.45rem 0.75rem;
-    font-size: 0.83rem;
-}
-
-/* ============================ */
-/* ===== ALERTES ===== */
-/* ============================ */
-.alert {
-    padding: 0.85rem 1rem;
-    border-radius: var(--radius-sm);
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.alert-error {
-    background: #fef2f2;
-    color: #b91c1c;
-    border-left: 4px solid var(--danger);
-}
-
-.alert-success {
-    background: #ecfdf5;
-    color: #047857;
-    border-left: 4px solid var(--success);
-}
-
-.alert a {
-    color: inherit;
-    font-weight: 700;
-    margin-left: 0.5rem;
-}
-
-/* ============================ */
-/* ===== FORMULAIRES ===== */
-/* ============================ */
-.form-group {
-    margin-bottom: 1.2rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.4rem;
-    font-weight: 600;
-    color: var(--text);
-    font-size: 0.85rem;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-size: 0.95rem;
-    font-family: inherit;
-    transition: border-color 0.15s, box-shadow 0.15s;
-    background: #fff;
-    color: var(--text);
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-.form-group textarea {
-    resize: vertical;
-    min-height: 70px;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
-}
-
-.form-actions {
-    display: flex;
-    gap: 0.6rem;
-    align-items: center;
-    margin-top: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.inline-form {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-end;
-    flex-wrap: wrap;
-}
-
-.inline-form .form-group {
-    margin-bottom: 0;
-    flex: 1;
-    min-width: 150px;
-}
-
-/* ============================ */
-/* ===== CARTES GÉNÉRIQUES ===== */
-/* ============================ */
-.card {
-    background: #fff;
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
-    margin-bottom: 1.5rem;
-}
-
-.card h3 {
-    margin-bottom: 1rem;
-    color: var(--text);
-    font-size: 1.05rem;
-    font-weight: 700;
-}
-
-.card-header-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.card-header-flex h3 {
-    margin-bottom: 0;
-}
-
-/* ============================ */
-/* ===== BADGES ===== */
-/* ============================ */
-.badge {
-    display: inline-block;
-    padding: 0.15rem 0.55rem;
-    border-radius: 20px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-.badge-status-todo        { background: var(--bg); color: var(--text-muted); }
-.badge-status-in_progress { background: #fffbeb; color: #b45309; }
-.badge-status-done        { background: #ecfdf5; color: #047857; }
-.badge-priority-low       { background: #ecfdf5; color: #047857; }
-.badge-priority-medium    { background: #fffbeb; color: #b45309; }
-.badge-priority-high      { background: #fef2f2; color: #b91c1c; }
-
-/* ============================ */
-/* ===== PRIORITÉ PILL ===== */
-/* ============================ */
-.priority-pill {
-    display: inline-block;
-    padding: 0.2rem 0.65rem;
-    border-radius: 20px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.2px;
-    white-space: nowrap;
-}
-
-.priority-low    { background: #ecfdf5; color: #047857; }
-.priority-medium { background: #fffbeb; color: #b45309; }
-.priority-high   { background: #fef2f2; color: #b91c1c; }
-
-/* ============================ */
-/* ===== POINT DE COULEUR ===== */
-/* ============================ */
-.color-dot {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-/* ============================ */
-/* ===== BOUTON RETOUR ===== */
-/* ============================ */
-.btn-back {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
-    flex-shrink: 0;
-}
-
-.btn-back:hover {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
-    transform: translateX(-2px);
-}
-
-/* ============================ */
-/* ===== PAGE HEADER (titre + retour) ===== */
-/* ============================ */
 .page-header {
     display: flex;
     align-items: center;
@@ -292,80 +25,437 @@
 }
 
 .page-header h2 {
-    margin: 0;
-    color: var(--text);
     flex: 1;
-    font-weight: 700;
+    min-width: 0;
+    margin: 0;
+    font-size: 1.6rem;
 }
 
 .btn-export {
     margin-left: auto;
 }
 
-/* ============================ */
-/* ===== MAIN ===== */
-/* ============================ */
-.app-main {
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 0 1.5rem;
+/* ===== Boutons ===== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.62rem 1.05rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
 }
 
-.app-main-wide {
-    max-width: 1280px;
+.btn svg {
+    flex-shrink: 0;
 }
 
-.app-main h2 {
-    margin-bottom: 1rem;
-    color: var(--text);
+.btn-primary {
+    background: var(--accent);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--accent-strong);
+    color: #fff;
+}
+
+.btn-secondary,
+.btn-outline {
+    background: var(--surface);
+    color: var(--ink);
+    border-color: var(--line-strong);
+}
+
+.btn-secondary:hover,
+.btn-outline:hover {
+    background: var(--paper);
+    border-color: var(--ink-3);
+    color: var(--ink);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--accent);
+    padding: 0.4rem 0.6rem;
+}
+
+.btn-ghost:hover {
+    background: var(--accent-tint);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-small {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.84rem;
+}
+
+/* Bouton-icône (modifier, supprimer…) */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-icon:hover {
+    background: var(--paper);
+    border-color: var(--line);
+    color: var(--ink);
+}
+
+.btn-icon-danger:hover {
+    background: var(--danger-tint);
+    border-color: transparent;
+    color: var(--danger);
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.btn-back:hover {
+    background: var(--paper);
+    color: var(--ink);
+}
+
+/* ===== Alertes ===== */
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    font-size: 0.92rem;
+    font-weight: 500;
+}
+
+.alert svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.alert-error,
+.alert-danger {
+    background: var(--danger-tint);
+    border-color: #f2c7c7;
+    color: #8f2020;
+}
+
+.alert-success {
+    background: var(--done-tint);
+    border-color: #bfe3cf;
+    color: #145c3c;
+}
+
+.alert a {
+    color: inherit;
     font-weight: 700;
+    text-decoration: underline;
+    margin-left: 0.35rem;
 }
 
-.app-main p {
+/* ===== Formulaires ===== */
+.form-group {
+    margin-bottom: 1.1rem;
+    min-width: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--ink-2);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.62rem 0.8rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--ink-3);
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+    border-color: var(--ink-3);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(11, 110, 120, 0.16);
+}
+
+.form-group textarea {
+    min-height: 84px;
+    resize: vertical;
+}
+
+.form-group input[type="color"] {
+    height: 42px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 0 1rem;
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+}
+
+.inline-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+.inline-form .form-group {
+    flex: 1;
+    min-width: 160px;
+    margin-bottom: 0;
+}
+
+/* ===== Cartes ===== */
+.card {
+    margin-bottom: 1.25rem;
+    padding: 1.4rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+}
+
+.card > h3 {
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+}
+
+/* Panneau repliable (formulaire de tâche) */
+.card-collapsible {
+    padding: 0;
+}
+
+.card-collapsible > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1rem 1.4rem;
+    list-style: none;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 650;
+    border-radius: var(--radius-lg);
+}
+
+.card-collapsible > summary::-webkit-details-marker {
+    display: none;
+}
+
+.card-collapsible > summary:hover {
+    background: var(--paper);
+}
+
+.summary-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--accent-tint);
+    color: var(--accent);
+}
+
+.summary-chevron {
+    margin-left: auto;
+    color: var(--ink-3);
+    transition: transform 0.2s;
+}
+
+.card-collapsible[open] > summary {
+    border-bottom: 1px solid var(--line);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.card-collapsible[open] .summary-chevron {
+    transform: rotate(180deg);
+}
+
+.card-collapsible > .collapsible-body {
+    padding: 1.25rem 1.4rem 1.4rem;
+}
+
+/* ===== Badges ===== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    white-space: nowrap;
+    line-height: 1.5;
+}
+
+.badge-category {
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    color: var(--ink-2);
+}
+
+.badge-status-todo        { background: var(--todo-tint);     color: var(--todo); }
+.badge-status-in_progress { background: var(--progress-tint); color: var(--progress); }
+.badge-status-done        { background: var(--done-tint);     color: var(--done); }
+.badge-priority-low       { background: var(--todo-tint);     color: var(--todo); }
+.badge-priority-medium    { background: var(--warn-tint);     color: var(--warn); }
+.badge-priority-high      { background: var(--danger-tint);   color: var(--danger); }
+
+.priority-pill {
+    display: inline-block;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.priority-low    { background: var(--todo-tint);   color: var(--todo); }
+.priority-medium { background: var(--warn-tint);   color: var(--warn); }
+.priority-high   { background: var(--danger-tint); color: var(--danger); }
+
+.color-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ===== État vide ===== */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 2.25rem 1rem;
+    text-align: center;
+    color: var(--ink-2);
+}
+
+.empty-state-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
     margin-bottom: 0.5rem;
-    color: var(--text-muted);
+    border-radius: 50%;
+    background: var(--paper);
+    color: var(--ink-3);
 }
 
-/* ============================ */
-/* ===== RESPONSIVE GLOBAL ===== */
-/* ============================ */
-@media (max-width: 900px) {
+.empty-state strong {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.empty-state span {
+    font-size: 0.9rem;
+    color: var(--ink-3);
+}
+
+/* ===== Adaptation ===== */
+@media (max-width: 899px) {
     .app-main {
-        padding: 0 1rem;
-        margin: 1.5rem auto;
-    }
-
-    .page-header h2 {
-        font-size: 1.25rem;
-    }
-
-    .card {
-        padding: 1.25rem;
+        padding: 1.5rem 1.25rem 2.5rem;
     }
 }
 
 @media (max-width: 600px) {
     .app-main {
-        padding: 0 0.75rem;
-        margin: 1rem auto;
+        padding: 1.25rem 0.9rem 2rem;
+    }
+
+    .page-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .page-header .btn-export {
+        width: 100%;
+        margin: 0;
     }
 
     .card {
-        padding: 1rem;
+        padding: 1.1rem;
     }
 
-    .card h3 {
-        font-size: 1rem;
+    .card-collapsible > summary {
+        padding: 0.9rem 1.1rem;
     }
 
-    .btn {
-        padding: 0.65rem 1rem;
-        font-size: 0.88rem;
+    .card-collapsible > .collapsible-body {
+        padding: 1.1rem;
     }
 
-    .btn-small {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.78rem;
+    .form-row {
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .form-actions {
@@ -375,7 +465,6 @@
 
     .form-actions .btn {
         width: 100%;
-        justify-content: center;
     }
 
     .inline-form {
@@ -384,6 +473,6 @@
     }
 
     .inline-form .form-group {
-        min-width: 100%;
+        min-width: 0;
     }
 }

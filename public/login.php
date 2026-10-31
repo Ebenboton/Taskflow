@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/../src/Auth.php';
 require_once __DIR__ . '/../src/LoginThrottle.php';
+require_once __DIR__ . '/partials/icons.php';
 
 $auth = new Auth();
 $throttle = new LoginThrottle();
@@ -68,36 +69,50 @@ if (random_int(1, 10) === 1) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - TaskFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/header.css">
     <link rel="stylesheet" href="assets/css/auth.css">
 </head>
 <body class="auth-page">
-    <div class="auth-container">
-        <h1>Connexion</h1>
+    <div class="auth-shell">
+        <?php require __DIR__ . '/partials/auth-aside.php'; ?>
 
-        <?php if ($error): ?>
-            <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
+        <main class="auth-main">
+            <div class="auth-container">
+                <h1>Connexion</h1>
+                <p class="auth-lead">Accédez à vos tâches et à votre tableau de bord.</p>
 
-        <form method="POST" action="">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required
-                       value="<?= htmlspecialchars($email) ?>">
+                <?php if ($error): ?>
+                    <div class="alert alert-error" role="alert">
+                        <?= icon('alert-circle', 18) ?>
+                        <span><?= htmlspecialchars($error) ?></span>
+                    </div>
+                <?php endif; ?>
+
+                <form method="POST" action="">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required autocomplete="email"
+                               value="<?= htmlspecialchars($email) ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" id="password" name="password" required autocomplete="current-password">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Se connecter</button>
+                </form>
+
+                <p class="auth-link">
+                    Pas encore de compte ? <a href="register.php">S'inscrire</a>
+                </p>
             </div>
-
-            <div class="form-group">
-                <label for="password">Mot de passe</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Se connecter</button>
-        </form>
-
-        <p class="auth-link">
-            Pas encore de compte ? <a href="register.php">S'inscrire</a>
-        </p>
+        </main>
     </div>
 </body>
 </html>

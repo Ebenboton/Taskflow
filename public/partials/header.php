@@ -1,43 +1,51 @@
 <?php
 // public/partials/header.php
-// Barre de navigation commune à toutes les pages
+// Navigation commune à toutes les pages (barre latérale sur ordinateur, barre supérieure sur mobile)
 
 require_once __DIR__ . '/../../src/Auth.php';
 require_once __DIR__ . '/../../src/CSRF.php';
+require_once __DIR__ . '/icons.php';
 
 $auth = $auth ?? new Auth();
 $currentPage = basename($_SERVER['PHP_SELF']);
+$headerUsername = (string) $auth->getUsername();
+$headerInitial = mb_strtoupper(mb_substr($headerUsername, 0, 1)) ?: '?';
 ?>
-<header class="app-header">
-    <div class="header-left">
-        <a href="dashboard.php" class="logo-link">
-            <h1 class="logo">TaskFlow</h1>
+<header class="app-header" id="appHeader">
+    <div class="header-bar">
+        <a href="dashboard.php" class="logo-link" aria-label="TaskFlow – Tableau de bord">
+            <span class="logo-mark" aria-hidden="true"><?= icon('check', 18) ?></span>
+            <span class="logo">TaskFlow</span>
         </a>
+
+        <button type="button" class="nav-toggle" id="navToggle"
+                aria-label="Ouvrir le menu de navigation" aria-controls="headerPanel" aria-expanded="false">
+            <?= icon('menu', 22) ?>
+        </button>
     </div>
 
-    <button type="button" class="nav-toggle" id="navToggle"
-            aria-label="Ouvrir le menu de navigation" aria-controls="headerNav" aria-expanded="false">
-        <span></span><span></span><span></span>
-    </button>
+    <div class="header-panel" id="headerPanel">
+        <nav class="header-nav" id="headerNav" aria-label="Navigation principale">
+            <a href="dashboard.php" class="<?= $currentPage === 'dashboard.php' ? 'active' : '' ?>"<?= $currentPage === 'dashboard.php' ? ' aria-current="page"' : '' ?>>
+                <?= icon('grid', 18) ?><span>Tableau de bord</span>
+            </a>
+            <a href="tasks.php" class="<?= $currentPage === 'tasks.php' ? 'active' : '' ?>"<?= $currentPage === 'tasks.php' ? ' aria-current="page"' : '' ?>>
+                <?= icon('check-square', 18) ?><span>Tâches</span>
+            </a>
+            <a href="categories.php" class="<?= $currentPage === 'categories.php' ? 'active' : '' ?>"<?= $currentPage === 'categories.php' ? ' aria-current="page"' : '' ?>>
+                <?= icon('folder', 18) ?><span>Catégories</span>
+            </a>
+        </nav>
 
-    <nav class="header-nav" id="headerNav">
-        <a href="dashboard.php" class="<?= $currentPage === 'dashboard.php' ? 'active' : '' ?>">Dashboard</a>
-        <a href="tasks.php" class="<?= $currentPage === 'tasks.php' ? 'active' : '' ?>">Tâches</a>
-        <a href="categories.php" class="<?= $currentPage === 'categories.php' ? 'active' : '' ?>">Catégories</a>
-    </nav>
-
-    <div class="user-menu">
-        <button type="button" class="user-menu-toggle" id="userMenuToggle" aria-label="Menu utilisateur">
-            <span class="user-avatar">👤</span>
-        </button>
-        <div class="user-dropdown" id="userDropdown">
-            <div class="user-dropdown-header">
-                <span class="user-dropdown-name"><?= htmlspecialchars($auth->getUsername()) ?></span>
+        <div class="user-menu">
+            <div class="user-identity">
+                <span class="user-avatar" aria-hidden="true"><?= htmlspecialchars($headerInitial) ?></span>
+                <span class="user-name"><?= htmlspecialchars($headerUsername) ?></span>
             </div>
-            <form method="POST" action="logout.php" style="margin:0;">
+            <form method="POST" action="logout.php" class="logout-form">
                 <?= CSRF::field() ?>
                 <button type="submit" class="user-dropdown-logout">
-                    <span class="logout-icon">⏻</span>
+                    <?= icon('log-out', 16) ?>
                     <span class="logout-text">Déconnexion</span>
                 </button>
             </form>
@@ -47,18 +55,22 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const toggle = document.getElementById('userMenuToggle');
-    const dropdown = document.getElementById('userDropdown');
+    var header = document.getElementById('appHeader');
+    var toggle = document.getElementById('navToggle');
+    if (!header || !toggle) return;
 
-    if (!toggle || !dropdown) return;
+    function setOpen(open) {
+        header.classList.toggle('is-open', open);
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.setAttribute('aria-label', open ? 'Fermer le menu de navigation' : 'Ouvrir le menu de navigation');
+    }
 
-    toggle.addEventListener('click', function (e) {
-        e.stopPropagation();
-        dropdown.classList.toggle('show');
+    toggle.addEventListener('click', function () {
+        setOpen(!header.classList.contains('is-open'));
     });
 
-    document.addEventListener('click', function () {
-        dropdown.classList.remove('show');
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') setOpen(false);
     });
 });
 </script>

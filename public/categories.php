@@ -59,6 +59,9 @@ if (isset($_GET['edit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catégories - TaskFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="assets/css/header.css">
@@ -69,12 +72,17 @@ if (isset($_GET['edit'])) {
 
     <main class="app-main">
         <div class="page-header">
-            <button onclick="history.back()" class="btn-back" title="Retour">←</button>
+            <button type="button" onclick="history.back()" class="btn-back" title="Retour" aria-label="Retour">
+                <?= icon('arrow-left', 18) ?>
+            </button>
             <h2>Mes catégories</h2>
         </div>
 
         <?php if ($message): ?>
-            <div class="alert alert-<?= $messageType ?>"><?= htmlspecialchars($message) ?></div>
+            <div class="alert alert-<?= $messageType ?>" role="<?= $messageType === 'error' ? 'alert' : 'status' ?>">
+                <?= icon($messageType === 'error' ? 'alert-circle' : 'check-circle', 18) ?>
+                <span><?= htmlspecialchars($message) ?></span>
+            </div>
         <?php endif; ?>
 
         <section class="card">
@@ -93,7 +101,7 @@ if (isset($_GET['edit'])) {
                            value="<?= $editCategory ? htmlspecialchars($editCategory['name']) : '' ?>">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="flex: 0 0 120px;">
                     <label for="color">Couleur</label>
                     <input type="color" id="color" name="color"
                            value="<?= $editCategory ? htmlspecialchars($editCategory['color']) : '#3498db' ?>">
@@ -113,11 +121,15 @@ if (isset($_GET['edit'])) {
             <h3>Liste (<?= count($categories) ?>)</h3>
 
             <?php if (empty($categories)): ?>
-                <p>Aucune catégorie. Créez-en une !</p>
+                <div class="empty-state">
+                    <span class="empty-state-icon"><?= icon('folder', 22) ?></span>
+                    <strong>Aucune catégorie</strong>
+                    <span>Créez-en une pour classer vos tâches.</span>
+                </div>
             <?php else: ?>
                 <div class="category-grid">
                     <?php foreach ($categories as $cat): ?>
-                        <div class="category-card" style="border-top: 4px solid <?= htmlspecialchars($cat['color']) ?>">
+                        <div class="category-card" style="--cat: <?= htmlspecialchars($cat['color']) ?>">
                             <div class="category-card-header">
                                 <span class="color-dot" style="background: <?= htmlspecialchars($cat['color']) ?>"></span>
                                 <h4><?= htmlspecialchars($cat['name']) ?></h4>
@@ -128,14 +140,18 @@ if (isset($_GET['edit'])) {
                             </p>
 
                             <div class="category-card-actions">
-                                <a href="categories.php?edit=<?= $cat['id'] ?>" class="btn btn-small">✏️</a>
+                                <a href="categories.php?edit=<?= $cat['id'] ?>" class="btn-icon" title="Modifier" aria-label="Modifier la catégorie <?= htmlspecialchars($cat['name']) ?>">
+                                    <?= icon('edit', 17) ?>
+                                </a>
 
-                                <form method="POST" action="" style="display:inline"
+                                <form method="POST" action=""
                                       onsubmit="return confirm('Supprimer cette catégorie ? Les tâches liées passeront en Sans catégorie.');">
                                     <?= CSRF::field() ?>
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?= $cat['id'] ?>">
-                                    <button type="submit" class="btn btn-small btn-white">🗑️</button>
+                                    <button type="submit" class="btn-icon btn-icon-danger" title="Supprimer" aria-label="Supprimer la catégorie <?= htmlspecialchars($cat['name']) ?>">
+                                        <?= icon('trash', 17) ?>
+                                    </button>
                                 </form>
                             </div>
                         </div>

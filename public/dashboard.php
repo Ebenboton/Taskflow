@@ -37,6 +37,12 @@ else                 $greeting = "Bonsoir";
 $radius = 52;
 $circumference = 2 * M_PI * $radius;
 $dashOffset = $circumference - ($progress / 100) * $circumference;
+
+// Total des tâches classées par catégorie (pour les barres de répartition)
+$catTotal = 0;
+foreach ($categories as $c) {
+    $catTotal += (int) $c['task_count'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -44,7 +50,10 @@ $dashOffset = $circumference - ($progress / 100) * $circumference;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - TaskFlow</title>
+    <title>Tableau de bord - TaskFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="assets/css/header.css">
@@ -52,17 +61,13 @@ $dashOffset = $circumference - ($progress / 100) * $circumference;
 </head>
 
 <body class="dashboard-page">
-    <?php
-    require __DIR__ . '/partials/header.php';
-    require __DIR__ . '/partials/icons.php';
-    ?>
+    <?php require __DIR__ . '/partials/header.php'; ?>
 
     <main class="app-main app-main-wide">
         <!-- ===== En-tête de page ===== -->
         <div class="dashboard-hero">
             <div>
-                <p class="hero-greeting"><?= $greeting ?>,</p>
-                <h1 class="hero-name"><?= htmlspecialchars($username) ?></h1>
+                <h1 class="hero-name"><?= $greeting ?>, <?= htmlspecialchars($username) ?></h1>
                 <p class="hero-sub">Voici un aperçu de votre productivité aujourd'hui.</p>
             </div>
             <div class="hero-actions">
@@ -75,68 +80,49 @@ $dashOffset = $circumference - ($progress / 100) * $circumference;
             </div>
         </div>
 
+        <!-- ===== Statistiques ===== -->
+        <section class="stats-strip" aria-label="Statistiques des tâches">
+            <div class="stat stat-total">
+                <span class="stat-label"><?= icon('inbox', 16) ?> Tâches totales</span>
+                <span class="stat-value"><?= $stats['total'] ?></span>
+            </div>
+            <div class="stat stat-todo">
+                <span class="stat-label"><?= icon('clock', 16) ?> À faire</span>
+                <span class="stat-value"><?= $stats['todo'] ?></span>
+            </div>
+            <div class="stat stat-progress">
+                <span class="stat-label"><?= icon('loader', 16) ?> En cours</span>
+                <span class="stat-value"><?= $stats['in_progress'] ?></span>
+            </div>
+            <div class="stat stat-done">
+                <span class="stat-label"><?= icon('check-circle', 16) ?> Terminées</span>
+                <span class="stat-value"><?= $stats['done'] ?></span>
+            </div>
+            <div class="stat stat-overdue<?= (int) $stats['overdue'] > 0 ? ' is-alert' : '' ?>">
+                <span class="stat-label"><?= icon('alert-triangle', 16) ?> En retard</span>
+                <span class="stat-value"><?= $stats['overdue'] ?></span>
+            </div>
+        </section>
+
         <!-- ===== Grille principale ===== -->
         <div class="dashboard-grid">
 
-            <!-- ===== Colonne gauche ===== -->
+            <!-- ===== Colonne principale ===== -->
             <div class="dashboard-col-main">
-
-                <!-- Stats -->
-                <section class="stats-grid-modern">
-                    <div class="stat-card-modern stat-accent-blue">
-                        <div class="stat-icon-wrap stat-icon-blue"><?= icon('inbox', 22) ?></div>
-                        <div class="stat-body">
-                            <span class="stat-value-modern"><?= $stats['total'] ?></span>
-                            <span class="stat-label-modern">Tâches totales</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card-modern stat-accent-amber">
-                        <div class="stat-icon-wrap stat-icon-amber"><?= icon('clock', 22) ?></div>
-                        <div class="stat-body">
-                            <span class="stat-value-modern"><?= $stats['todo'] ?></span>
-                            <span class="stat-label-modern">À faire</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card-modern stat-accent-purple">
-                        <div class="stat-icon-wrap stat-icon-purple"><?= icon('loader', 22) ?></div>
-                        <div class="stat-body">
-                            <span class="stat-value-modern"><?= $stats['in_progress'] ?></span>
-                            <span class="stat-label-modern">En cours</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card-modern stat-accent-green">
-                        <div class="stat-icon-wrap stat-icon-green"><?= icon('check-circle', 22) ?></div>
-                        <div class="stat-body">
-                            <span class="stat-value-modern"><?= $stats['done'] ?></span>
-                            <span class="stat-label-modern">Terminées</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card-modern stat-accent-red">
-                        <div class="stat-icon-wrap stat-icon-red"><?= icon('alert-triangle', 22) ?></div>
-                        <div class="stat-body">
-                            <span class="stat-value-modern"><?= $stats['overdue'] ?></span>
-                            <span class="stat-label-modern">En retard</span>
-                        </div>
-                    </div>
-                </section>
 
                 <!-- Tâches à faire -->
                 <section class="card-modern">
                     <div class="card-modern-header">
                         <div>
-                            <h3 class="card-modern-title">À faire prochainement</h3>
+                            <h2 class="card-modern-title">À faire prochainement</h2>
                             <p class="card-modern-sub">Vos 5 prochaines tâches prioritaires</p>
                         </div>
-                        <a href="tasks.php" class="btn btn-ghost btn-small">Voir tout →</a>
+                        <a href="tasks.php" class="btn btn-ghost btn-small">Voir tout <?= icon('arrow-right', 14) ?></a>
                     </div>
 
                     <?php if (empty($urgentTasks)): ?>
                         <div class="empty-modern">
-                            <div class="empty-modern-icon"><?= icon('sparkles', 32) ?></div>
+                            <div class="empty-modern-icon"><?= icon('sparkles', 26) ?></div>
                             <p>Aucune tâche en attente</p>
                             <span class="empty-modern-sub">Profitez de votre temps libre !</span>
                         </div>
@@ -155,7 +141,7 @@ $dashOffset = $circumference - ($progress / 100) * $circumference;
                                         <?php if ($task['due_date']): ?>
                                             <span class="task-mini-date <?= $overdue ? 'is-overdue' : '' ?>">
                                                 <?= icon('calendar', 13) ?>
-                                                <?= date('d M', strtotime($task['due_date'])) ?>
+                                                <?= date('d/m/Y', strtotime($task['due_date'])) ?>
                                                 <?= $overdue ? '· En retard' : '' ?>
                                             </span>
                                         <?php endif; ?>
@@ -177,42 +163,50 @@ $dashOffset = $circumference - ($progress / 100) * $circumference;
                 <section class="card-modern">
                     <div class="card-modern-header">
                         <div>
-                            <h3 class="card-modern-title">Mes catégories</h3>
+                            <h2 class="card-modern-title">Mes catégories</h2>
                             <p class="card-modern-sub">Répartition de vos tâches</p>
                         </div>
-                        <a href="categories.php" class="btn btn-ghost btn-small">Gérer →</a>
+                        <a href="categories.php" class="btn btn-ghost btn-small">Gérer <?= icon('arrow-right', 14) ?></a>
                     </div>
 
                     <?php if (empty($categories)): ?>
                         <p class="empty-modern-sub">Aucune catégorie pour le moment.</p>
                     <?php else: ?>
-                        <div class="category-chips">
+                        <ul class="cat-dist">
                             <?php foreach ($categories as $cat): ?>
-                                <div class="category-chip">
-                                    <span class="category-chip-dot" style="background: <?= htmlspecialchars($cat['color']) ?>"></span>
-                                    <span class="category-chip-name"><?= htmlspecialchars($cat['name']) ?></span>
-                                    <span class="category-chip-count"><?= $cat['task_count'] ?></span>
-                                </div>
+                                <?php $share = $catTotal > 0 ? round(((int) $cat['task_count'] / $catTotal) * 100) : 0; ?>
+                                <li class="category-chip">
+                                    <div class="cat-dist-top">
+                                        <span class="category-chip-dot" style="background: <?= htmlspecialchars($cat['color']) ?>"></span>
+                                        <span class="category-chip-name"><?= htmlspecialchars($cat['name']) ?></span>
+                                        <span class="category-chip-count"><?= $cat['task_count'] ?></span>
+                                    </div>
+                                    <div class="cat-bar" aria-hidden="true">
+                                        <span style="width: <?= $share ?>%; background: <?= htmlspecialchars($cat['color']) ?>"></span>
+                                    </div>
+                                </li>
                             <?php endforeach; ?>
-                        </div>
+                        </ul>
                     <?php endif; ?>
                 </section>
             </div>
 
-            <!-- ===== Colonne droite (sidebar) ===== -->
+            <!-- ===== Colonne latérale ===== -->
             <aside class="dashboard-col-side">
 
                 <!-- Progression circulaire -->
                 <section class="card-modern card-progress">
-                    <h3 class="card-modern-title">Progression</h3>
+                    <h2 class="card-modern-title">Progression</h2>
                     <p class="card-modern-sub">Tâches terminées</p>
 
                     <div class="progress-circle-wrap">
-                        <svg class="progress-circle" viewBox="0 0 120 120" width="160" height="160">
+                        <svg class="progress-circle" viewBox="0 0 120 120" width="160" height="160" role="img"
+                             aria-label="<?= $progress ?> % des tâches terminées">
                             <circle class="progress-circle-bg" cx="60" cy="60" r="<?= $radius ?>" />
                             <circle class="progress-circle-fill" cx="60" cy="60" r="<?= $radius ?>"
                                 stroke-dasharray="<?= $circumference ?>"
-                                stroke-dashoffset="<?= $dashOffset ?>" />
+                                stroke-dashoffset="<?= $dashOffset ?>"
+                                style="--circ: <?= $circumference ?>" />
                         </svg>
                         <div class="progress-circle-label">
                             <span class="progress-percent"><?= $progress ?>%</span>
@@ -228,11 +222,11 @@ $dashOffset = $circumference - ($progress / 100) * $circumference;
 
                 <!-- Actions rapides -->
                 <section class="card-modern">
-                    <h3 class="card-modern-title">Actions rapides</h3>
+                    <h2 class="card-modern-title">Actions rapides</h2>
 
                     <div class="quick-actions-modern">
                         <a href="tasks.php" class="quick-action">
-                            <div class="quick-action-icon quick-icon-blue"><?= icon('plus', 20) ?></div>
+                            <div class="quick-action-icon"><?= icon('plus', 18) ?></div>
                             <div class="quick-action-body">
                                 <span class="quick-action-title">Nouvelle tâche</span>
                                 <span class="quick-action-sub">Créer rapidement</span>
@@ -240,7 +234,7 @@ $dashOffset = $circumference - ($progress / 100) * $circumference;
                         </a>
 
                         <a href="categories.php" class="quick-action">
-                            <div class="quick-action-icon quick-icon-purple"><?= icon('folder', 20) ?></div>
+                            <div class="quick-action-icon"><?= icon('folder', 18) ?></div>
                             <div class="quick-action-body">
                                 <span class="quick-action-title">Catégories</span>
                                 <span class="quick-action-sub">Organiser</span>
@@ -248,7 +242,7 @@ $dashOffset = $circumference - ($progress / 100) * $circumference;
                         </a>
 
                         <a href="export.php" class="quick-action">
-                            <div class="quick-action-icon quick-icon-green"><?= icon('download', 20) ?></div>
+                            <div class="quick-action-icon"><?= icon('download', 18) ?></div>
                             <div class="quick-action-body">
                                 <span class="quick-action-title">Export CSV</span>
                                 <span class="quick-action-sub">Sauvegarder</span>

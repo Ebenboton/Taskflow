@@ -1,82 +1,66 @@
 /* public/assets/css/categories.css */
-/* categories.php uniquement */
+/* Page des catégories */
 
 .category-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
     gap: 1rem;
 }
 
 .category-card {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.2rem;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.2s;
+    --cat: var(--line-strong);
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
-}
-
-.category-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+    gap: 0.9rem;
+    padding: 1.1rem 1.1rem 0.9rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: inset 0 4px 0 var(--cat);
 }
 
 .category-card-header {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.65rem;
+    min-width: 0;
+    padding-top: 0.25rem;
 }
 
 .category-card-header h4 {
-    color: var(--text);
+    min-width: 0;
+    overflow: hidden;
+    font-family: var(--font-body);
     font-size: 1rem;
-    font-weight: 700;
-    margin: 0;
-    flex: 1;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .category-card-count {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    margin: 0;
+    font-size: 0.88rem;
+    color: var(--ink-2);
 }
 
 .category-card-actions {
     display: flex;
-    gap: 0.4rem;
-    margin-top: auto;
+    align-items: center;
+    gap: 0.15rem;
+    margin: auto -0.35rem -0.2rem auto;
+}
+
+.category-card-actions form {
+    margin: 0;
+}
+
+.color-field {
+    display: flex;
+    align-items: center;
 }
 
 @media (max-width: 600px) {
     .category-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .category-card {
-        padding: 1rem;
-    }
-}
-
-.category-card,
-.category-card-header,
-.category-card-header h4 {
-    min-width: 0;
-    overflow-wrap: anywhere;
-}
-.category-card-actions {
-    flex-wrap: wrap;
-}
-.category-card-actions .btn {
-    justify-content: center;
-}
-@media (max-width: 380px) {
-    .category-card-actions {
-        flex-direction: column;
-    }
-    .category-card-actions .btn {
-        width: 100%;
+        grid-template-columns: minmax(0, 1fr);
     }
 }
